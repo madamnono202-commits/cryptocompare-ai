@@ -177,8 +177,15 @@ model AutomationJob {
   completedAt   DateTime? @map("completed_at")
   errorMessage  String?   @map("error_message")
   resultSummary String?   @map("result_summary")
+  logs          String?
+  topic         String?
+  blogPostId    String?   @map("blog_post_id")
+  retryCount    Int       @default(0) @map("retry_count")
+  metadata      String?
+  createdAt     DateTime  @default(now()) @map("created_at")
 
   @@index([jobType])
   @@index([status])
+  @@index([createdAt])
   @@map("automation_jobs")
 }
