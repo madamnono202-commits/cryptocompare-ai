@@ -1,17 +1,35 @@
 import { Metadata } from "next";
+import { Scale } from "lucide-react";
+import { Container } from "@/components/ui/container";
+import { Section } from "@/components/ui/section";
+import { PageHeader } from "@/components/ui/page-header";
+import { Placeholder } from "@/components/ui/placeholder";
 
 export const metadata: Metadata = {
-  title: "Compare Exchanges | CryptoCompare AI",
+  title: "Compare Exchanges",
   description: "Compare crypto exchanges side-by-side.",
 };
 
 export default function ComparePage() {
   return (
-    <div className="container mx-auto px-4 py-16">
-      <h1 className="text-3xl font-bold tracking-tight">Compare Exchanges</h1>
-      <p className="mt-4 text-muted-foreground">
-        Side-by-side exchange comparison coming soon.
-      </p>
-    </div>
+    <Section size="lg">
+      <Container>
+        <PageHeader
+          heading="Compare Exchanges"
+          description="Select two or more exchanges to compare fees, features, security, and supported assets side-by-side."
+        />
+        <div className="mt-10 space-y-8">
+          <Placeholder
+            label="Exchange Selector"
+            description="Dropdown selectors to pick exchanges for comparison will appear here."
+            icon={<Scale className="h-6 w-6 text-muted-foreground" />}
+          />
+          <Placeholder
+            label="Comparison Table"
+            description="Side-by-side comparison table with fees, features, and ratings will render here."
+          />
+        </div>
+      </Container>
+    </Section>
   );
 }
