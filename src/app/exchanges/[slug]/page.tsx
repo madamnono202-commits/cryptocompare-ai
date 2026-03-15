@@ -19,6 +19,7 @@ import { Section } from "@/components/ui/section";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { AffiliateLink } from "@/components/affiliate-link";
 import { ExchangeTabs } from "./exchange-tabs";
 
 // ---------------------------------------------------------------------------
@@ -334,20 +335,19 @@ export default async function ExchangePage({ params }: ExchangePageProps) {
                   ))}
                 </div>
               </div>
-              <Button
-                asChild
-                size="lg"
-                className="bg-gradient-brand hover:opacity-90"
+              <AffiliateLink
+                exchangeId={exchange.id}
+                sourcePage="exchange-detail"
+                href={exchange.affiliateUrl ?? "#"}
               >
-                <a
-                  href={exchange.affiliateUrl ?? "#"}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
+                <Button
+                  size="lg"
+                  className="bg-gradient-brand hover:opacity-90"
                 >
                   Visit {exchange.name}{" "}
                   <ExternalLink className="ml-2 h-4 w-4" />
-                </a>
-              </Button>
+                </Button>
+              </AffiliateLink>
             </div>
           </div>
         </Container>
@@ -403,18 +403,17 @@ export default async function ExchangePage({ params }: ExchangePageProps) {
                   )}
                 </div>
               </div>
-              <Button
-                asChild
-                className="bg-gradient-brand hover:opacity-90"
+              <AffiliateLink
+                exchangeId={exchange.id}
+                sourcePage="exchange-detail-offer"
+                href={exchange.affiliateUrl ?? "#"}
               >
-                <a
-                  href={exchange.affiliateUrl ?? "#"}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
+                <Button
+                  className="bg-gradient-brand hover:opacity-90"
                 >
                   Claim Offer <ArrowRight className="ml-1 h-4 w-4" />
-                </a>
-              </Button>
+                </Button>
+              </AffiliateLink>
             </div>
           </Container>
         </Section>
@@ -425,6 +424,7 @@ export default async function ExchangePage({ params }: ExchangePageProps) {
         <Container>
           <ExchangeTabs
             exchange={{
+              id: exchange.id,
               name: exchange.name,
               description: exchange.description,
               foundedYear: exchange.foundedYear,

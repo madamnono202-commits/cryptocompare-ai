@@ -14,6 +14,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { AffiliateLink } from "@/components/affiliate-link";
 
 // ---------------------------------------------------------------------------
 // Props
@@ -21,6 +22,7 @@ import { Button } from "@/components/ui/button";
 
 interface ExchangeTabsProps {
   exchange: {
+    id: string;
     name: string;
     description: string | null;
     foundedYear: number | null;
@@ -150,16 +152,16 @@ export function ExchangeTabs({ exchange, fee, faqItems }: ExchangeTabsProps) {
                   <ArrowRight className="ml-1 h-3 w-3" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="sm">
-                <a
-                  href={exchange.affiliateUrl ?? "#"}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                >
+              <AffiliateLink
+                exchangeId={exchange.id}
+                sourcePage="exchange-detail-overview"
+                href={exchange.affiliateUrl ?? "#"}
+              >
+                <Button variant="outline" size="sm">
                   Visit {exchange.name}{" "}
                   <ExternalLink className="ml-1 h-3 w-3" />
-                </a>
-              </Button>
+                </Button>
+              </AffiliateLink>
             </div>
           </CardContent>
         </Card>
@@ -228,14 +230,14 @@ export function ExchangeTabs({ exchange, fee, faqItems }: ExchangeTabsProps) {
 
             <p className="mt-4 text-xs text-muted-foreground">
               Fees are subject to change. Visit{" "}
-              <a
+              <AffiliateLink
+                exchangeId={exchange.id}
+                sourcePage="exchange-detail-fees"
                 href={exchange.affiliateUrl ?? "#"}
-                target="_blank"
-                rel="noopener noreferrer nofollow"
                 className="text-primary underline"
               >
                 {exchange.name}
-              </a>{" "}
+              </AffiliateLink>{" "}
               for the most up-to-date fee schedule. Volume-based discounts may
               apply.
             </p>

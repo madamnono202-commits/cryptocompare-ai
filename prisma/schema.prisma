@@ -102,6 +102,7 @@ model AffiliateClick {
   id         String   @id @default(cuid())
   exchangeId String   @map("exchange_id")
   sourcePage String?  @map("source_page")
+  userId     String?  @map("user_id")
   clickedAt  DateTime @default(now()) @map("clicked_at")
   ipHash     String?  @map("ip_hash")
 
@@ -109,6 +110,7 @@ model AffiliateClick {
 
   @@index([exchangeId])
   @@index([clickedAt])
+  @@index([sourcePage])
   @@map("affiliate_clicks")
 }
 
