@@ -12,7 +12,12 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Placeholder } from "@/components/ui/placeholder";
+import { CryptoTicker } from "@/components/home/crypto-ticker";
+import { ExchangesTable } from "@/components/home/exchanges-table";
+import { FeaturedExchanges } from "@/components/home/featured-exchanges";
+import { BlogTeaser } from "@/components/home/blog-teaser";
+import { ToolsStrip } from "@/components/home/tools-strip";
+import { NewsletterCta } from "@/components/home/newsletter-cta";
 
 const features = [
   {
@@ -81,6 +86,9 @@ export default function HomePage() {
         </Container>
       </Section>
 
+      {/* Live Crypto Ticker */}
+      <CryptoTicker />
+
       {/* Features */}
       <Section variant="muted">
         <Container>
@@ -112,43 +120,20 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* Trending exchanges placeholder */}
-      <Section>
-        <Container>
-          <div className="mb-8 flex items-center justify-between">
-            <h2 className="text-2xl font-bold sm:text-3xl">
-              Trending Exchanges
-            </h2>
-            <Button asChild variant="ghost" size="sm">
-              <Link href="/exchanges">
-                View All <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-          <Placeholder
-            label="Exchange Rankings"
-            description="Top exchange cards with live data will be rendered here."
-          />
-        </Container>
-      </Section>
+      {/* Top Exchanges Comparison Table */}
+      <ExchangesTable />
 
-      {/* CTA */}
-      <Section variant="muted" size="lg">
-        <Container className="flex flex-col items-center gap-6 text-center">
-          <h2 className="max-w-2xl text-3xl font-bold sm:text-4xl">
-            Ready to find your perfect exchange?
-          </h2>
-          <p className="max-w-lg text-muted-foreground">
-            Join thousands of traders who use CryptoCompare AI to make smarter
-            decisions.
-          </p>
-          <Button asChild size="lg" className="bg-gradient-brand hover:opacity-90">
-            <Link href="/compare">
-              Start Comparing <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </Button>
-        </Container>
-      </Section>
+      {/* Featured Exchange Cards */}
+      <FeaturedExchanges />
+
+      {/* AI Blog Teaser */}
+      <BlogTeaser />
+
+      {/* Tools Strip */}
+      <ToolsStrip />
+
+      {/* Newsletter Signup CTA */}
+      <NewsletterCta />
     </>
   );
 }
