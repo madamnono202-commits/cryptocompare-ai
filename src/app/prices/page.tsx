@@ -1,33 +1,50 @@
 import { Metadata } from "next";
-import { TrendingUp } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { PageHeader } from "@/components/ui/page-header";
-import { Placeholder } from "@/components/ui/placeholder";
+import { PriceTable } from "@/components/prices/price-table";
+import { getMarketData } from "@/lib/coingecko";
 
 export const metadata: Metadata = {
-  title: "Live Prices",
-  description: "Real-time cryptocurrency prices across major exchanges.",
+  title: "Live Crypto Prices",
+  description:
+    "Track real-time cryptocurrency prices, market cap, volume, and 24h/7d changes for the top 200 coins. Compare prices across major exchanges.",
+  openGraph: {
+    title: "Live Crypto Prices | CryptoCompare AI",
+    description:
+      "Track real-time cryptocurrency prices, market cap, volume, and 24h/7d changes for the top 200 coins.",
+  },
 };
 
-export default function PricesPage() {
+// Re-validate every 2 minutes (ISR)
+export const revalidate = 120;
+
+export default async function PricesPage() {
+  let coins;
+  try {
+    coins = await getMarketData(1, 200);
+  } catch {
+    coins = [];
+  }
+
   return (
     <Section size="lg">
       <Container>
         <PageHeader
           heading="Live Crypto Prices"
-          description="Track real-time cryptocurrency prices and market data across all major exchanges."
+          description="Track real-time cryptocurrency prices and market data for the top 200 coins by market cap."
         />
-        <div className="mt-10 space-y-8">
-          <Placeholder
-            label="Price Ticker Bar"
-            description="Scrolling top-coin price ticker will appear here."
-            icon={<TrendingUp className="h-6 w-6 text-muted-foreground" />}
-          />
-          <Placeholder
-            label="Price Table"
-            description="Sortable table with coin prices, 24h change, volume, and market cap will render here."
-          />
+        <div className="mt-10">
+          {coins.length > 0 ? (
+            <PriceTable coins={coins} />
+          ) : (
+            <div className="rounded-lg border border-dashed p-12 text-center">
+              <p className="text-lg font-semibold">Unable to load price data</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Please try again later. CoinGecko API may be temporarily unavailable.
+              </p>
+            </div>
+          )}
         </div>
       </Container>
     </Section>
