@@ -8,33 +8,175 @@ datasource db {
 }
 
 // ──────────────────────────────────────────────
-// Core exchange model (business logic TBD)
+// Exchange
 // ──────────────────────────────────────────────
 model Exchange {
-  id        String   @id @default(cuid())
-  name      String
-  slug      String   @unique
-  logo      String?
-  url       String
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  name         String
+  logoUrl      String?  @map("logo_url")
+  affiliateUrl String?  @map("affiliate_url")
+  description  String?
+  foundedYear  Int?     @map("founded_year")
+  headquarters String?
+  score        Float?   @default(0)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
+  fees              ExchangeFee[]
+  offers            ExchangeOffer[]
+  affiliateClicks   AffiliateClick[]
+  savedComparisonsA SavedComparison[] @relation("ExchangeA")
+  savedComparisonsB SavedComparison[] @relation("ExchangeB")
+
+  @@index([score])
+  @@index([createdAt])
   @@map("exchanges")
 }
 
 // ──────────────────────────────────────────────
-// Blog post model (business logic TBD)
+// ExchangeFee
 // ──────────────────────────────────────────────
-model Post {
-  id          String   @id @default(cuid())
-  title       String
-  slug        String   @unique
-  content     String?
-  published   Boolean  @default(false)
-  publishedAt DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model ExchangeFee {
+  id              String   @id @default(cuid())
+  exchangeId      String   @map("exchange_id")
+  spotMakerFee    Float?   @map("spot_maker_fee")
+  spotTakerFee    Float?   @map("spot_taker_fee")
+  futuresMakerFee Float?   @map("futures_maker_fee")
+  futuresTakerFee Float?   @map("futures_taker_fee")
+  withdrawalFee   Float?   @map("withdrawal_fee")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 
-  @@map("posts")
+  exchange Exchange @relation(fields: [exchangeId], references: [id], onDelete: Cascade)
+
+  @@index([exchangeId])
+  @@map("exchange_fees")
+}
+
+// ──────────────────────────────────────────────
+// ExchangeOffer
+// ──────────────────────────────────────────────
+model ExchangeOffer {
+  id          String    @id @default(cuid())
+  exchangeId  String    @map("exchange_id")
+  offerText   String    @map("offer_text")
+  bonusAmount Float?    @map("bonus_amount")
+  expiresAt   DateTime? @map("expires_at")
+  isActive    Boolean   @default(true) @map("is_active")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  exchange Exchange @relation(fields: [exchangeId], references: [id], onDelete: Cascade)
+
+  @@index([exchangeId])
+  @@index([isActive])
+  @@map("exchange_offers")
+}
+
+// ──────────────────────────────────────────────
+// BlogPost
+// ──────────────────────────────────────────────
+model BlogPost {
+  id              String    @id @default(cuid())
+  slug            String    @unique
+  title           String
+  content         String?
+  metaTitle       String?   @map("meta_title")
+  metaDescription String?   @map("meta_description")
+  featuredImage   String?   @map("featured_image")
+  category        String?
+  tags            String[]  @default([])
+  publishedAt     DateTime? @map("published_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  aiGenerated     Boolean   @default(false) @map("ai_generated")
+
+  @@index([slug])
+  @@index([category])
+  @@index([publishedAt])
+  @@map("blog_posts")
+}
+
+// ──────────────────────────────────────────────
+// AffiliateClick
+// ──────────────────────────────────────────────
+model AffiliateClick {
+  id         String   @id @default(cuid())
+  exchangeId String   @map("exchange_id")
+  sourcePage String?  @map("source_page")
+  clickedAt  DateTime @default(now()) @map("clicked_at")
+  ipHash     String?  @map("ip_hash")
+
+  exchange Exchange @relation(fields: [exchangeId], references: [id], onDelete: Cascade)
+
+  @@index([exchangeId])
+  @@index([clickedAt])
+  @@map("affiliate_clicks")
+}
+
+// ──────────────────────────────────────────────
+// User
+// ──────────────────────────────────────────────
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  savedComparisons SavedComparison[]
+  priceAlerts      PriceAlert[]
+
+  @@map("users")
+}
+
+// ──────────────────────────────────────────────
+// SavedComparison
+// ──────────────────────────────────────────────
+model SavedComparison {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  exchangeAId String   @map("exchange_a_id")
+  exchangeBId String   @map("exchange_b_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exchangeA Exchange @relation("ExchangeA", fields: [exchangeAId], references: [id], onDelete: Cascade)
+  exchangeB Exchange @relation("ExchangeB", fields: [exchangeBId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("saved_comparisons")
+}
+
+// ──────────────────────────────────────────────
+// PriceAlert
+// ──────────────────────────────────────────────
+model PriceAlert {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  coinSymbol  String   @map("coin_symbol")
+  targetPrice Float    @map("target_price")
+  triggered   Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([coinSymbol])
+  @@map("price_alerts")
+}
+
+// ──────────────────────────────────────────────
+// AutomationJob
+// ──────────────────────────────────────────────
+model AutomationJob {
+  id            String    @id @default(cuid())
+  jobType       String    @map("job_type")
+  status        String    @default("pending")
+  startedAt     DateTime? @map("started_at")
+  completedAt   DateTime? @map("completed_at")
+  errorMessage  String?   @map("error_message")
+  resultSummary String?   @map("result_summary")
+
+  @@index([jobType])
+  @@index([status])
+  @@map("automation_jobs")
 }
